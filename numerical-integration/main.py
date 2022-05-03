@@ -1,5 +1,5 @@
 
-from integration_rules.rectangle_rule import rectangle_rule_midpoint
+from integration_rules.trapezoid_rule import trapezoid
 from numerical_integration import NumericalIntegration
 
 def f(x):
@@ -7,7 +7,7 @@ def f(x):
 
 def main():
 
-    integration_rule = rectangle_rule_midpoint
+    integration_rule = trapezoid
 
     numerical_integration = NumericalIntegration(integration_rule)
 
