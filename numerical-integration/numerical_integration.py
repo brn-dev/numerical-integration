@@ -16,9 +16,9 @@ class NumericalIntegration:
             raise ValueError(f'f ({f}) is not a valid one dimensional function!')
 
     def __check_interval(self, a: float, b: float):
-        if not isinstance(a, float):
+        if not (isinstance(a, float) or isinstance(a, int)):
             raise ValueError(f'a ({a}) is not a float!')
-        if not isinstance(b, float):
+        if not (isinstance(b, float) or isinstance(b, int)):
             raise ValueError(f'b ({b}) is not a float!')
         if a > b:
             raise ValueError(f'a ({a}) can not be greater than b ({b})!')
