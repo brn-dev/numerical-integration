@@ -1,3 +1,5 @@
+from typing import Union
+
 from integration_rules.integration_rule import IntegrationRule, OneDimensionalFunction
 
 
@@ -15,7 +17,7 @@ class NumericalIntegration:
         if not callable(f):
             raise ValueError(f'f ({f}) is not a valid one dimensional function!')
 
-    def __check_interval(self, a: float, b: float):
+    def __check_interval(self, a: Union[int, float], b: Union[int, float]):
         if not (isinstance(a, float) or isinstance(a, int)):
             raise ValueError(f'a ({a}) is not a float!')
         if not (isinstance(b, float) or isinstance(b, int)):
@@ -29,7 +31,13 @@ class NumericalIntegration:
         if n_slices < 1:
             raise ValueError(f'n_slices ({n_slices}) has to be bigger than 0!')
 
-    def approximate_integration(self, f: OneDimensionalFunction, a: float, b: float, n_slices: int) -> float:
+    def approximate_integration(
+            self,
+            f: OneDimensionalFunction,
+            a: Union[int, float],
+            b: Union[int, float],
+            n_slices: int
+    ) -> float:
         self.__check_f(f)
         self.__check_interval(a, b)
         self.__check_n_slices(n_slices)
