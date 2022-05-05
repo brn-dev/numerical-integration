@@ -1,7 +1,8 @@
-from integration_rules.integration_rule import OneDimensionalFunction
+
+from .integration_rule import OneDimensionalFunction
 
 
-def trapezoid(f: OneDimensionalFunction, a: float, b: float) -> float:
+def trapezoid_rule(f: OneDimensionalFunction, a: float, b: float) -> float:
     y0 = f(a)
     y1 = f(b)
     h = b - a
