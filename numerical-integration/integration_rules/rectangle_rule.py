@@ -1,5 +1,5 @@
 
-from integration_rules.integration_rule import OneDimensionalFunction
+from .integration_rule import OneDimensionalFunction
 
 def rectangle_rule_start(f: OneDimensionalFunction, a: float, b: float) -> float:
     return (b - a) * f(a)

@@ -42,13 +42,13 @@ class NumericalIntegration:
         self.__check_interval(a, b)
         self.__check_n_slices(n_slices)
 
-        step_width = (b - a) / n_slices
+        slice_width = (b - a) / n_slices
 
         area = 0
         x = a
 
         while x < b:
-            area += self.__integration_rule(f, x, x + step_width)
-            x += step_width
+            area += self.__integration_rule(f, x, x + slice_width)
+            x += slice_width
 
         return area
