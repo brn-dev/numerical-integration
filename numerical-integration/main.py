@@ -5,7 +5,7 @@ from integration_rules.barrel_rule import barrel_rule
 from numerical_integration import NumericalIntegration
 
 N_SLICES = 1000
-FROM = 0
+FROM = 2
 TO = 2
 
 def f(x):

@@ -22,8 +22,6 @@ class NumericalIntegration:
             raise ValueError(f'a ({a}) is not a float!')
         if not (isinstance(b, float) or isinstance(b, int)):
             raise ValueError(f'b ({b}) is not a float!')
-        if a > b:
-            raise ValueError(f'a ({a}) can not be greater than b ({b})!')
 
     def __check_n_slices(self, n_slices: int):
         if not isinstance(n_slices, int):
@@ -42,6 +40,15 @@ class NumericalIntegration:
         self.__check_interval(a, b)
         self.__check_n_slices(n_slices)
 
+        is_reversed = False
+        if a == b:
+            return 0
+        if a > b:
+            is_reversed = True
+            tmp = a
+            a = b
+            b = tmp
+
         slice_width = (b - a) / n_slices
 
         area = 0
@@ -50,5 +57,8 @@ class NumericalIntegration:
         while x < b:
             area += self.__integration_rule(f, x, x + slice_width)
             x += slice_width
+
+        if is_reversed:
+            area *= -1
 
         return area

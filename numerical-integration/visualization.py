@@ -1,7 +1,10 @@
+from typing import Callable
+
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 import numpy as np
 
+OneDimensionalNumpyFunction = Callable[[np.ndarray], np.ndarray]
 
 class Interval:
     def __init__(self, start, end, width, num_slices, slice_width):
@@ -17,11 +20,7 @@ def create_interval(start, end, num_slices):
     return Interval(start, end, width, num_slices, width / num_slices)
 
 
-def f(x: np.ndarray) -> np.ndarray:
-    return -(3 * x ** 4 - 2 * x ** 3 + 9 * x ** 2 + 5 * x + 4)
-
-
-def plot_rectangle_rule_start(start=-5, end=5, num_slices=10, graph_resolution=500):
+def plot_rectangle_rule_start(f: OneDimensionalNumpyFunction, start=-5, end=5, num_slices=10, graph_resolution=500):
     interval = create_interval(start, end, num_slices)
     x = np.linspace(interval.start, interval.end, graph_resolution)
     y = f(x)
@@ -32,7 +31,7 @@ def plot_rectangle_rule_start(start=-5, end=5, num_slices=10, graph_resolution=5
     plot_rectangle_rule(interval, x, y, x_rectangle, y_rectangle)
 
 
-def plot_rectangle_rule_mid(start=-5, end=5, num_slices=10, graph_resolution=500):
+def plot_rectangle_rule_mid(f: OneDimensionalNumpyFunction, start=-5, end=5, num_slices=10, graph_resolution=500):
     interval = create_interval(start, end, num_slices)
     x = np.linspace(interval.start, interval.end, graph_resolution)
     y = f(x)
@@ -43,7 +42,7 @@ def plot_rectangle_rule_mid(start=-5, end=5, num_slices=10, graph_resolution=500
     plot_rectangle_rule(interval, x, y, x_rectangle, y_rectangle)
 
 
-def plot_rectangle_rule_end(start=-5, end=5, num_slices=10, graph_resolution=500):
+def plot_rectangle_rule_end(f: OneDimensionalNumpyFunction, start=-5, end=5, num_slices=10, graph_resolution=500):
     interval = create_interval(start, end, num_slices)
     x = np.linspace(interval.start, interval.end, graph_resolution)
     y = f(x)
@@ -83,7 +82,7 @@ def plot_rectangle_rule(interval, x, y, x_rectangle, y_rectangle):
         )
 
 
-def plot_trapezoidal_rule(start=-5, end=5, num_slices=10, graph_resolution=500):
+def plot_trapezoidal_rule(f: OneDimensionalNumpyFunction, start=-5, end=5, num_slices=10, graph_resolution=500):
     interval = create_interval(start, end, num_slices)
     x = np.linspace(interval.start, interval.end, graph_resolution)
     y = f(x)
@@ -123,7 +122,14 @@ def parabola_from_points(p1, p2, p3):
     return Parabola(a, b, c)
 
 
-def plot_barrel_rule(start=-5, end=5, num_slices=1, graph_resolution=500, parabola_resolution=100):
+def plot_barrel_rule(
+        f: OneDimensionalNumpyFunction,
+        start=-5,
+        end=5,
+        num_slices=1,
+        graph_resolution=500,
+        parabola_resolution=100
+):
     interval = create_interval(start, end, num_slices)
     x = np.linspace(interval.start, interval.end, graph_resolution)
     y = f(x)
