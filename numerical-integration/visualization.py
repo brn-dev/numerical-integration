@@ -4,7 +4,18 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 import numpy as np
 
-OneDimensionalNumpyFunction = Callable[[np.ndarray], np.ndarray]
+from numerical_integration import NumericalIntegration
+from integration_rules.rectangle_rule import rectangle_rule_start, rectangle_rule_midpoint, rectangle_rule_end
+from integration_rules.trapezoid_rule import trapezoid_rule
+from integration_rules.barrel_rule import barrel_rule
+
+numerical_integration_rectangle_start = NumericalIntegration(rectangle_rule_start)
+numerical_integration_rectangle_midpoint = NumericalIntegration(rectangle_rule_midpoint)
+numerical_integration_rectangle_end = NumericalIntegration(rectangle_rule_end)
+
+numerical_integration_trapezoid = NumericalIntegration(trapezoid_rule)
+
+numerical_integration_barrel = NumericalIntegration(barrel_rule)
 
 class Interval:
     def __init__(self, start, end, width, num_slices, slice_width):
@@ -20,7 +31,7 @@ def create_interval(start, end, num_slices):
     return Interval(start, end, width, num_slices, width / num_slices)
 
 
-def plot_rectangle_rule_start(f: OneDimensionalNumpyFunction, start=-5, end=5, num_slices=10, graph_resolution=500):
+def plot_rectangle_rule_start(f, start=-5, end=5, num_slices=10, graph_resolution=500):
     interval = create_interval(start, end, num_slices)
     x = np.linspace(interval.start, interval.end, graph_resolution)
     y = f(x)
@@ -28,10 +39,10 @@ def plot_rectangle_rule_start(f: OneDimensionalNumpyFunction, start=-5, end=5, n
     x_rectangle = np.linspace(interval.start, interval.end, interval.num_slices, endpoint=False)
     y_rectangle = f(x_rectangle)
 
-    plot_rectangle_rule(interval, x, y, x_rectangle, y_rectangle)
+    plot_rectangle_rule(f, interval, x, y, x_rectangle, y_rectangle, 'start')
 
 
-def plot_rectangle_rule_mid(f: OneDimensionalNumpyFunction, start=-5, end=5, num_slices=10, graph_resolution=500):
+def plot_rectangle_rule_mid(f, start=-5, end=5, num_slices=10, graph_resolution=500):
     interval = create_interval(start, end, num_slices)
     x = np.linspace(interval.start, interval.end, graph_resolution)
     y = f(x)
@@ -39,10 +50,10 @@ def plot_rectangle_rule_mid(f: OneDimensionalNumpyFunction, start=-5, end=5, num
     x_rectangle = np.linspace(interval.start, interval.end, interval.num_slices, endpoint=False)
     y_rectangle = f(x_rectangle + interval.slice_width / 2)
 
-    plot_rectangle_rule(interval, x, y, x_rectangle, y_rectangle)
+    plot_rectangle_rule(f, interval, x, y, x_rectangle, y_rectangle, 'midpoint')
 
 
-def plot_rectangle_rule_end(f: OneDimensionalNumpyFunction, start=-5, end=5, num_slices=10, graph_resolution=500):
+def plot_rectangle_rule_end(f, start=-5, end=5, num_slices=10, graph_resolution=500):
     interval = create_interval(start, end, num_slices)
     x = np.linspace(interval.start, interval.end, graph_resolution)
     y = f(x)
@@ -50,7 +61,7 @@ def plot_rectangle_rule_end(f: OneDimensionalNumpyFunction, start=-5, end=5, num
     x_rectangle = np.linspace(interval.start, interval.end, interval.num_slices, endpoint=False)
     y_rectangle = f(x_rectangle + interval.slice_width)
 
-    plot_rectangle_rule(interval, x, y, x_rectangle, y_rectangle)
+    plot_rectangle_rule(f, interval, x, y, x_rectangle, y_rectangle, 'end')
 
 
 def create_color_scale(num_shades, start_color, end_color):
@@ -66,8 +77,24 @@ def create_color_scale(num_shades, start_color, end_color):
     return colors
 
 
-def plot_rectangle_rule(interval, x, y, x_rectangle, y_rectangle):
+def plot_rectangle_rule(f, interval, x, y, x_rectangle, y_rectangle, rectangle_type):
+    if rectangle_type == 'start':
+        area = numerical_integration_rectangle_start.approximate_integration(
+            f, interval.start, interval.end, interval.num_slices
+        )
+    elif rectangle_type == 'midpoint':
+        area = numerical_integration_rectangle_midpoint.approximate_integration(
+            f, interval.start, interval.end, interval.num_slices
+        )
+    elif rectangle_type == 'end':
+        area = numerical_integration_rectangle_end.approximate_integration(
+            f, interval.start, interval.end, interval.num_slices
+        )
+    else:
+        raise ValueError('rectangle_type does not have a valid value!')
+
     fig, ax = plt.subplots(figsize=(20, 12))
+    ax.title.set_text(f'Numerical integration using the rectangle rule ({rectangle_type}) with area {area}')
     ax.plot(x, y, color=(1, 0, 0), linewidth=4)
     color_scale = create_color_scale(interval.num_slices, (0, 0, 1), (0, 1, 0.6))
 
@@ -82,7 +109,7 @@ def plot_rectangle_rule(interval, x, y, x_rectangle, y_rectangle):
         )
 
 
-def plot_trapezoidal_rule(f: OneDimensionalNumpyFunction, start=-5, end=5, num_slices=10, graph_resolution=500):
+def plot_trapezoidal_rule(f, start=-5, end=5, num_slices=10, graph_resolution=500):
     interval = create_interval(start, end, num_slices)
     x = np.linspace(interval.start, interval.end, graph_resolution)
     y = f(x)
@@ -90,8 +117,11 @@ def plot_trapezoidal_rule(f: OneDimensionalNumpyFunction, start=-5, end=5, num_s
     x_trapezoid = np.linspace(interval.start, interval.end, interval.num_slices + 1, endpoint=True)
     y_trapezoid = f(x_trapezoid)
 
+    area = numerical_integration_trapezoid.approximate_integration(f, start, end, num_slices)
+
     color_scale = create_color_scale(interval.num_slices + 1, (0, 0, 1), (0, 1, 0.6))
     fig, ax = plt.subplots(figsize=(20, 12))
+    ax.title.set_text(f'Numerical integration using the trapezoid rule with area {area}')
     ax.plot(x, y, color=(1, 0, 0), linewidth=4)
 
     for i in range(interval.num_slices):
@@ -123,7 +153,7 @@ def parabola_from_points(p1, p2, p3):
 
 
 def plot_barrel_rule(
-        f: OneDimensionalNumpyFunction,
+        f,
         start=-5,
         end=5,
         num_slices=1,
@@ -135,7 +165,10 @@ def plot_barrel_rule(
     y = f(x)
     x_slices = np.linspace(interval.start, interval.end, num_slices + 1, endpoint=True)
 
+    area = numerical_integration_barrel.approximate_integration(f, start, end, num_slices)
+
     fig, ax = plt.subplots(figsize=(20, 12))
+    ax.title.set_text(f'Numerical integration using the trapezoid rule with area {area}')
     ax.plot(x, y, color=(1, 0, 0), linewidth=4)
 
     for i in range(len(x_slices) - 1):
