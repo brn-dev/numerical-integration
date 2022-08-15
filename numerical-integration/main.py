@@ -1,7 +1,7 @@
 
 from integration_rules.rectangle_rule import rectangle_rule_midpoint
 from integration_rules.trapezoid_rule import trapezoid_rule
-from integration_rules.barrel_rule import barrel_rule
+from integration_rules.barrel_rule import barrel_rule_1_3
 from numerical_integration import NumericalIntegration
 
 def print_rule_result(rule_name: str, result: float):
@@ -28,7 +28,7 @@ def main():
 
     print_rule_result(
         'Barrel Rule',
-        NumericalIntegration(barrel_rule).approximate_integration(f, x_from, x_to, n_slices)
+        NumericalIntegration(barrel_rule_1_3).approximate_integration(f, x_from, x_to, n_slices)
     )
 
 
