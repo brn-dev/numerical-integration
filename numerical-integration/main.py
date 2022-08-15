@@ -1,4 +1,6 @@
 
+import numpy as np
+
 from integration_rules.rectangle_rule import rectangle_rule_midpoint
 from integration_rules.trapezoid_rule import trapezoid_rule
 from integration_rules.barrel_rule import barrel_rule_1_3
