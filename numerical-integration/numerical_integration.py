@@ -52,9 +52,10 @@ class NumericalIntegration:
         area = 0
         x = a
         interval_length = b - a
+        slice_length = interval_length / n_slices
 
         for i in range(1, n_slices + 1):
-            b = a + i * interval_length / n_slices
+            b = a + i * slice_length
             area += self.__integration_rule(f, x, b)
             x = b
 
@@ -63,7 +64,7 @@ class NumericalIntegration:
         if is_reversed:
             area *= -1
 
-        if str(area) == "-0.0":
+        if str(area) == '-0.0':
             area *= -1
 
         return area
