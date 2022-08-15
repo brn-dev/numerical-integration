@@ -5,7 +5,7 @@ import numpy as np
 from numerical_integration import NumericalIntegration
 from integration_rules.rectangle_rule import rectangle_rule_start, rectangle_rule_midpoint, rectangle_rule_end
 from integration_rules.trapezoid_rule import trapezoid_rule
-from integration_rules.barrel_rule import barrel_rule
+from integration_rules.barrel_rule import barrel_rule_1_3
 
 numerical_integration_rectangle_start = NumericalIntegration(rectangle_rule_start)
 numerical_integration_rectangle_midpoint = NumericalIntegration(rectangle_rule_midpoint)
@@ -13,7 +13,7 @@ numerical_integration_rectangle_end = NumericalIntegration(rectangle_rule_end)
 
 numerical_integration_trapezoid = NumericalIntegration(trapezoid_rule)
 
-numerical_integration_barrel = NumericalIntegration(barrel_rule)
+numerical_integration_barrel = NumericalIntegration(barrel_rule_1_3)
 
 class Interval:
     def __init__(self, start, end, width, num_slices, slice_width):
@@ -119,7 +119,7 @@ def plot_trapezoidal_rule(f, start=-5, end=5, num_slices=10, graph_resolution=50
 
     color_scale = create_color_scale(interval.num_slices + 1, (0, 0, 1), (0, 1, 0.6))
     fig, ax = plt.subplots(figsize=(20, 12))
-    ax.title.set_text(f'Numerical integration using the trapezoid rule with area {area}')
+    ax.title.set_text(f'Numerical integration using the trapezoidal rule with area {area}')
     ax.plot(x, y, color=(1, 0, 0), linewidth=4)
 
     for i in range(interval.num_slices):
@@ -166,7 +166,7 @@ def plot_barrel_rule(
     area = numerical_integration_barrel.approximate_integration(f, start, end, num_slices)
 
     fig, ax = plt.subplots(figsize=(20, 12))
-    ax.title.set_text(f'Numerical integration using the trapezoid rule with area {area}')
+    ax.title.set_text(f'Numerical integration using the barrel rule with area {area}')
     ax.plot(x, y, color=(1, 0, 0), linewidth=4)
 
     for i in range(len(x_slices) - 1):
@@ -180,3 +180,11 @@ def plot_barrel_rule(
         x_parabola = np.linspace(a, b, parabola_resolution, endpoint=True)
         y_parabola = parabola(x_parabola)
         ax.plot(x_parabola, y_parabola, color=(1, 0.647058823529, 0), linewidth=4)
+
+
+if __name__ == "__main__":
+    def f(x):
+        return x**3
+
+    f = f
+    plot_trapezoidal_rule(f, start=-5, end=5, num_slices=14)
