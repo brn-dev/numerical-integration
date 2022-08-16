@@ -4,8 +4,10 @@ from integration_rules.trapezoid_rule import trapezoid_rule
 from integration_rules.barrel_rule import barrel_rule_1_3
 from numerical_integration import NumericalIntegration
 
+
 def print_rule_result(rule_name: str, result: float):
     print(f'{rule_name}: {result}')
+
 
 def main():
     function_str = input('Function with parameter "x": ')
