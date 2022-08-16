@@ -5,7 +5,7 @@ import numpy as np
 from numerical_integration import NumericalIntegration
 from integration_rules.rectangle_rule import rectangle_rule_start, rectangle_rule_midpoint, rectangle_rule_end
 from integration_rules.trapezoid_rule import trapezoid_rule
-from integration_rules.barrel_rule import barrel_rule_1_3
+from integration_rules.barrel_rule import barrel_rule_1_3, barrel_rule_3_8
 
 numerical_integration_rectangle_start = NumericalIntegration(rectangle_rule_start)
 numerical_integration_rectangle_midpoint = NumericalIntegration(rectangle_rule_midpoint)
@@ -14,6 +14,8 @@ numerical_integration_rectangle_end = NumericalIntegration(rectangle_rule_end)
 numerical_integration_trapezoid = NumericalIntegration(trapezoid_rule)
 
 numerical_integration_barrel = NumericalIntegration(barrel_rule_1_3)
+numerical_integration_barrel_3_8 = NumericalIntegration(barrel_rule_3_8)
+
 
 class Interval:
     def __init__(self, start, end, width, num_slices, slice_width):
@@ -201,7 +203,7 @@ def plot_barrel_rule(
     area = numerical_integration_barrel.approximate_integration(f, start, end, num_slices)
 
     fig, ax = plt.subplots(figsize=(20, 12))
-    ax.title.set_text(f'Numerical integration using the barrel rule with area {area}')
+    ax.title.set_text(f"Numerical integration using the simpson's rule 1/3 with area {area}")
     create_grid(ax)
 
     color_scale = create_color_scale(interval.num_slices, (0, 0, 1), (0, 1, 0.6))
@@ -221,5 +223,52 @@ def plot_barrel_rule(
         ax.fill_between(x_parabola, 0, y_parabola, facecolor=color_scale[i],
                         edgecolor=color_scale[i])
     
+    # draw graph
+    ax.plot(x, y, color=(1, 0, 0), linewidth=4)
+
+
+def plot_barrel_rule_3_8(
+        f,
+        start=-5,
+        end=5,
+        num_slices=10,
+        graph_resolution=500,
+        polynom_resolution=100
+):
+
+    interval = create_interval(start, end, num_slices)
+
+    x = np.linspace(interval.start, interval.end, graph_resolution)
+    y = f(x)
+
+    x_slices = np.linspace(interval.start, interval.end, num_slices + 1, endpoint=True)
+
+    area = numerical_integration_barrel_3_8.approximate_integration(f, start, end, num_slices)
+
+    fig, ax = plt.subplots(figsize=(20, 12))
+    ax.title.set_text(f"Numerical integration using the simpson's rule 3/8 with area {area}")
+    create_grid(ax)
+
+    color_scale = create_color_scale(interval.num_slices + 1, (0, 0, 1), (0, 1, 0.6))
+
+    # draw polynomials
+    for i in range(len(x_slices) - 1):
+        a = x_slices[i]
+        b = x_slices[i + 1]
+        q1 = a + ((b - a) / 3)
+        q3 = b - ((b - a) / 3)
+        p1 = (a, f(a))
+        p2 = (q1, f(q1))
+        p3 = (q3, f(q3))
+        p4 = (b, f(b))
+
+        coefficients = np.polyfit([p1[0], p2[0], p3[0], p4[0]], [p1[1], p2[1], p3[1], p4[1]], 3)
+
+        x_polynomial = np.linspace(a, b, polynom_resolution, endpoint=True)
+        y_polynomial = coefficients[0] * x_polynomial ** 3 + coefficients[1] * x_polynomial ** 2 \
+                       + coefficients[2] * x_polynomial + coefficients[3]
+        ax.plot(x_polynomial, y_polynomial, color=color_scale[i], linewidth=4)
+        ax.fill_between(x_polynomial, 0, y_polynomial, facecolor=color_scale[i], edgecolor=color_scale[i])
+
     # draw graph
     ax.plot(x, y, color=(1, 0, 0), linewidth=4)
