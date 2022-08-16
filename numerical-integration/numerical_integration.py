@@ -49,22 +49,26 @@ class NumericalIntegration:
             a = b
             b = tmp
 
-        area = 0
-        x = a
-        interval_length = b - a
-        slice_length = interval_length / n_slices
+        try:
+            area = 0
+            x = a
+            interval_length = b - a
+            slice_length = interval_length / n_slices
 
-        for i in range(1, n_slices + 1):
-            b = a + i * slice_length
-            area += self.__integration_rule(f, x, b)
-            x = b
+            for i in range(1, n_slices + 1):
+                b = a + i * slice_length
+                area += self.__integration_rule(f, x, b)
+                x = b
 
-        area = round(area, 6)
+            area = round(area, 6)
 
-        if is_reversed:
-            area *= -1
+            if is_reversed:
+                area *= -1
 
-        if str(area) == '-0.0':
-            area *= -1
+            if str(area) == '-0.0':
+                area *= -1
 
-        return area
+            return area
+        except ZeroDivisionError:
+            print('Division by zero detected :(')
+            return 0
