@@ -3,7 +3,7 @@ import numpy as np
 
 from integration_rules.rectangle_rule import rectangle_rule_midpoint
 from integration_rules.trapezoid_rule import trapezoid_rule
-from integration_rules.barrel_rule import barrel_rule_1_3
+from integration_rules.barrel_rule import barrel_rule_1_3, barrel_rule_3_8
 from numerical_integration import NumericalIntegration
 
 
@@ -26,16 +26,20 @@ def main():
     )
 
     print_rule_result(
-        'Trapezoid rule',
+        'Trapezoidal rule',
         NumericalIntegration(trapezoid_rule).approximate_integration(f, x_from, x_to, n_slices)
     )
 
     print_rule_result(
-        'Barrel Rule',
+        "Simpson's rule 1/3",
         NumericalIntegration(barrel_rule_1_3).approximate_integration(f, x_from, x_to, n_slices)
+    )
+
+    print_rule_result(
+        "Simpson's rule 3/8",
+        NumericalIntegration(barrel_rule_3_8).approximate_integration(f, x_from, x_to, n_slices)
     )
 
 
 if __name__ == '__main__':
     main()
-
